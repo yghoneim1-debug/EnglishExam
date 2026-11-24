@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENGLISH FINAL EXAM WEBSITE</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    /* Smooth custom transitions and keycap styling */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .keycap {
+      box-shadow: 0 2px 0 0 rgba(15, 23, 42, 0.9), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    }
+    .fade-in {
+      animation: fadeIn 0.25s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white flex flex-col">
+
+  <!-- Top Navigation Bar (Hidden on Landing Page) -->
+  <header id="top-nav" class="hidden sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <button onclick="navigateTo('dashboard')" class="flex items-center gap-3 text-left group focus:outline-none">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center font-extrabold text-white shadow-lg shadow-indigo-500/20 group-hover:bg-indigo-500 transition">
+          E
+        </div>
+        <div>
+          <span class="font-extrabold tracking-tight text-sm sm:text-base text-white block leading-tight">ENGLISH FINAL EXAM WEBSITE</span>
+          <span class="text-xs text-slate-400 hidden sm:block">Complete Exam Prep Portal</span>
+        </div>
+      </button>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div id="header-stats" class="hidden md:flex items-center gap-4 text-xs font-medium bg-slate-800/80 border border-slate-700/70 px-3.5 py-1.5 rounded-xl">
+          <span class="text-slate-400">Overall Mastery: <strong id="nav-progress-text" class="text-emerald-400">0%</strong></span>
+          <span class="text-slate-600">|</span>
+          <span class="text-slate-400">Solved: <strong id="nav-solved-count" class="text-indigo-400">0/156</strong></span>
+        </div>
+        <button id="nav-dashboard-btn" onclick="navigateTo('dashboard')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition flex items-center gap-1.5">
+          <span>Dashboard</span>
+          <kbd class="hidden sm:inline-block text-[10px] font-mono bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">Esc</kbd>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="app" class="flex-1 flex flex-col">
+    <!-- Dynamic Views Render Here -->
+  </main>
+
+  <!-- Confirmation / Notification Modal (No alert/confirm used) -->
+  <div id="custom-modal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl fade-in">
+      <h3 id="modal-title" class="text-lg font-bold text-white mb-2">Confirm Action</h3>
+      <p id="modal-message" class="text-sm text-slate-300 mb-6 leading-relaxed">Are you sure?</p>
+      <div class="flex justify-end gap-3">
+        <button id="modal-cancel" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold transition">Cancel</button>
+        <button id="modal-confirm" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // COMPLETE EXAM QUESTION BANK (10 Topics | 156 Total Questions)
+    // =========================================================================
+    const EXAM_TOPICS = [
+      {
+        id: 'vocab',
+        badge: 'VOCABULARY',
+        title: 'Vocabulary Mastery',
+        subtitle: 'All 17 essential exam vocabulary words with definitions',
+        type: 'mcq',
+        color: 'indigo',
+        questions: [
+          {
+            q: 'What is the meaning of the word "Loathsome"?',
+            options: [
+              'Causing hatred, disgust, or intense repulsion',
+              'Showing great generosity and kindness toward strangers',
+              'Feeling mild curiosity or playful amusement',
+              'Moving slowly with grace and elegance'
+            ],
+            correct: [0],
+            explanation: 'Loathsome means causing hatred, disgust, or intense repulsion.'
+          },
+          {
+            q: 'What is the meaning of the word "Wretched"?',
+            options: [
+              'Wealthy, privileged, and full of pride',
+              'In a very unhappy, miserable, or unfortunate state',
+              'Calm, peaceful, and completely untroubled',
+              'Energetic, enthusiastic, and eager to help'
+            ],
+            correct: [1],
+            explanation: 'Wretched describes someone or something in a very unhappy, miserable, or unfortunate state.'
+          },
+          {
+            q: 'What is the meaning of the word "Dejected"?',
+            options: [
+              'Overjoyed and celebrating a major victory',
+              'Furious and seeking immediate revenge',
+              'Sad, depressed, and dispirited',
+              'Confident and proud of an accomplishment'
+            ],
+            correct: [2],
+            explanation: 'Dejected means sad, depressed, and dispirited—having low spirits.'
+          },
+          {
+            q: 'What is the meaning of the word "Abscond"?',
+            options: [
+              'To arrive early for an important ceremony',
+              'To forgive someone completely for a mistake',
+              'To build a strong fortress for protection',
+              'To leave hurriedly and secretly, typically to avoid detection or arrest'
+            ],
+            correct: [3],
+            explanation: 'Abscond means to leave hurriedly and secretly, especially to escape custody or avoid arrest.'
+          },
+          {
+            q: 'What is the meaning of "A stench"?',
+            options: [
+              'A strong, foul, and extremely unpleasant smell',
+              'A sweet fragrance of blooming spring flowers',
+              'A loud, echoing sound in an empty hallway',
+              'A sudden flash of bright light in the dark'
+            ],
+            correct: [0],
+            explanation: 'A stench is a strong, foul, and extremely unpleasant odor.'
+          },
+          {
+            q: 'What is the meaning of the word "Fetters"?',
+            options: [
+              'Decorative ribbons worn during celebrations',
+              'Chains or shackles used to restrain a prisoner’s ankles or wrists',
+              'Soft pillows used for resting on long journeys',
+              'Navigation maps used by sailors at sea'
+            ],
+            correct: [1],
+            explanation: 'Fetters are chains or manacles used to restrain a prisoner, typically placed around the ankles.'
+          },
+          {
+            q: 'What is the meaning of the word "Quadrant"?',
+            options: [
+              'A type of poem with fourteen rhyming lines',
+              'A severe illness caused by poor living conditions',
+              'An instrument used for measuring angles/altitude in navigation, or one quarter of a circle/area',
+              'A large wooden barrel used to store fresh water'
+            ],
+            correct: [2],
+            explanation: 'A quadrant is a navigation instrument for measuring angles/altitude (as seen in Equiano’s narrative) or each of four quarters of a circle/plane.'
+          },
+          {
+            q: 'What is the meaning of the word "Parcels"?',
+            options: [
+              'Wild animals hunted in dense forests',
+              'Sharp weapons used in medieval battles',
+              'Musical instruments played in an orchestra',
+              'Things or collections of things wrapped up in paper or packaged for carrying; small portions/packages'
+            ],
+            correct: [3],
+            explanation: 'Parcels are wrapped packages or bundles, or distinct portions/pieces of land or goods.'
+          },
+          {
+            q: 'What is the meaning of the word "Abstruse"?',
+            options: [
+              'Difficult to understand; obscure and complex',
+              'Extremely simple and obvious to everyone',
+              'Loud, noisy, and impossible to ignore',
+              'Brightly colored and visually appealing'
+            ],
+            correct: [0],
+            explanation: 'Abstruse means difficult to understand; obscure and overly complex.'
+          },
+          {
+            q: 'What is the meaning of the word "Quantitative"?',
+            options: [
+              'Based purely on personal feelings and emotions',
+              'Relating to, measuring, or measured by quantity or numerical data rather than quality',
+              'Impossible to measure or count accurately',
+              'Relating to ancient myths and legends'
+            ],
+            correct: [1],
+            explanation: 'Quantitative relates to measuring or being measured by the quantity/amount of something rather than its quality.'
+          },
+          {
+            q: 'What is the meaning of the word "Hypothesis"?',
+            options: [
+              'A proven law of nature that can never be questioned',
+              'A final summary written at the end of a novel',
+              'A proposed explanation or educated guess made on the basis of limited evidence as a starting point for further investigation',
+              'A formal speech given to persuade voters'
+            ],
+            correct: [2],
+            explanation: 'A hypothesis is a proposed explanation made on the basis of limited evidence as a starting point for further investigation.'
+          },
+          {
+            q: 'What is the meaning of the word "Domain"?',
+            options: [
+              'A tiny insect that camouflages itself as a stick',
+              'A secret underground tunnel used for escape',
+              'A brief moment of hesitation before speaking',
+              'An area of territory owned or controlled by a ruler/government, or a specified sphere of activity or knowledge'
+            ],
+            correct: [3],
+            explanation: 'Domain refers to an area of territory controlled by a ruler or a specific sphere of activity or knowledge.'
+          },
+          {
+            q: 'What is the meaning of the word "Conjecture"?',
+            options: [
+              'An opinion or conclusion formed on the basis of incomplete information; guesswork',
+              'A mathematical formula proven beyond any doubt',
+              'A direct eyewitness account recorded in court',
+              'A strict rule enforced by school authorities'
+            ],
+            correct: [0],
+            explanation: 'Conjecture is an opinion or conclusion formed on the basis of incomplete information (speculation/guesswork).'
+          },
+          {
+            q: 'What is the meaning of the word "Symmetry"?',
+            options: [
+              'Complete chaos and disorder without any pattern',
+              'The quality of being made up of exactly similar parts facing each other or around an axis; balanced proportion',
+              'A deep feeling of sorrow for someone else’s misfortune',
+              'The speed at which an object falls to the ground'
+            ],
+            correct: [1],
+            explanation: 'Symmetry is the quality of being made up of exactly similar parts facing each other or around an axis; balanced proportion.'
+          },
+          {
+            q: 'What is the meaning of the word "Sovereign"?',
+            options: [
+              'A humble servant with no legal rights',
+              'A type of currency worth almost nothing',
+              'A supreme ruler, especially a monarch, or possessing supreme/ultimate power',
+              'A traveler lost in an unfamiliar country'
+            ],
+            correct: [2],
+            explanation: 'Sovereign refers to a supreme ruler (such as a king or queen) or possessing supreme, independent authority.'
+          },
+          {
+            q: 'What is the meaning of the word "Caw"?',
+            options: [
+              'The gentle purring sound of a sleeping cat',
+              'The soft whisper of wind through tall grass',
+              'The melodic song of a nightingale at dawn',
+              'The harsh, raucous cry of a crow, rook, or raven'
+            ],
+            correct: [3],
+            explanation: 'A caw is the harsh, raucous cry made by a crow, rook, or raven.'
+          },
+          {
+            q: 'What is the meaning of the word "Captivity"?',
+            options: [
+              'The condition of being imprisoned, confined, or enslaved',
+              'Complete freedom to travel anywhere in the world',
+              'A state of deep sleep and peaceful dreaming',
+              'The ability to capture people’s attention with humor'
+            ],
+            correct: [0],
+            explanation: 'Captivity is the condition of being imprisoned, confined, or enslaved.'
+          }
+        ]
+      },
+      {
+        id: 'topic1',
+        badge: 'TOPIC 1',
+        title: 'Participial Phrases',
+        subtitle: 'Identifying participial phrases, modifiers, and functions',
+        type: 'mcq',
+        color: 'sky',
+        questions: [
+          {
+            q: '1) What is a participial phrase?',
+            options: [
+              'A participial phrase is a complete sentence with a subject and predicate.',
+              'A participial phrase is a type of verb tense.',
+              'A participial phrase is a single word that describes a noun.',
+              'A participial phrase is a phrase that begins with a participle and includes any modifiers or complements.'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): A participial phrase begins with a participle and includes modifiers or complements.'
+          },
+          {
+            q: "2) Identify the participial phrase in the sentence: 'Running down the street, she tripped over a rock.'",
+            options: [
+              'She tripped over a rock',
+              'Down the street',
+              'Running fast',
+              'Running down the street'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): "Running down the street" begins with the present participle "Running" and modifies "she".'
+          },
+          {
+            q: '3) Which of the following is a correct example of a participial phrase?',
+            options: [
+              'Running quickly, the athlete won the race.',
+              'The athlete quickly won the race.',
+              'Running the race, the athlete was tired.',
+              'The athlete won the race quickly.'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): "Running quickly, the athlete won the race."'
+          },
+          {
+            q: '4) How does a participial phrase function in a sentence?',
+            options: [
+              'A participial phrase serves as an adverb, modifying a verb.',
+              'A participial phrase acts as an adjective, modifying a noun or pronoun.',
+              'A participial phrase functions as a noun in a sentence.',
+              'A participial phrase is used to connect two independent clauses.'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): It acts as an adjective, modifying a noun or pronoun.'
+          },
+          {
+            q: '5) True or False: A participial phrase can act as an adjective.',
+            options: [
+              'A participial phrase can only act as a noun.',
+              'False',
+              'True',
+              'A participial phrase is always a complete sentence.'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): True — participial phrases function adjectivally.'
+          },
+          {
+            q: "6) Rewrite the sentence to include a participial phrase: 'The dog barked loudly.'",
+            options: [
+              'The dog barked quietly.',
+              'The dog was barking loudly.',
+              'Barking, the dog was loud.',
+              'Barking loudly, the dog alerted everyone.'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): "Barking loudly, the dog alerted everyone."'
+          },
+          {
+            q: "7) What is the main verb in the sentence: 'The broken vase lay on the floor.'?",
+            options: [
+              'sat',
+              'stood',
+              'broke',
+              'lay'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): "lay" is the main verb ("broken" is a past participle modifying "vase").'
+          },
+          {
+            q: "8) Choose the sentence that correctly uses a participial phrase: 'The girl, excited for the trip, packed her bags.' or 'The girl excited for the trip packed her bags.'",
+            options: [
+              'The girl, packing her bags, excited for the trip.',
+              'The girl excited for the trip, packed her bags.',
+              'Excited for the trip, the girl packed her bags.',
+              'The girl, excited for the trip, packed her bags.'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): "The girl, excited for the trip, packed her bags."'
+          },
+          {
+            q: "9) Identify the correction for the error in this sentence: 'Walking to the store, the rain started to fall.'",
+            options: [
+              'Walking to the store, I saw the rain falling.',
+              'The rain started to fall while I was walking to the store.',
+              'The rain began to fall as I walked to the store.',
+              "The sentence should be rephrased to 'Walking to the store, I noticed the rain started to fall.'"
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): "Walking to the store, I saw the rain falling." (This fixes the dangling modifier.)'
+          },
+          {
+            q: "10) What type of participle is used in the phrase 'baked cookies' in the sentence: 'The baked cookies smelled delicious.'?",
+            options: [
+              'gerund',
+              'present participle',
+              'infinitive',
+              'past participle'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): Past participle ("baked" modifies "cookies").'
+          },
+          {
+            q: '11) Identify the Participial Phrase in the following sentence: "Having completed the training program, Henry was ready to go to work."',
+            options: [
+              'Henry was ready',
+              'program, Henry',
+              'Having completed the training program,',
+              'to go to work.'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): "Having completed the training program,"'
+          },
+          {
+            q: '12) Identify the Participial Phrase in the following sentence: "The burned brownies did not satisfy my chocolate cravings."',
+            options: [
+              'burned brownies',
+              'chocolate cravings',
+              'did not satisfy',
+              'my'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): "burned brownies" (where "burned" is the participle describing "brownies").'
+          },
+          {
+            q: '13) Identify the participle(s) used as adjective(s) in the sentence: "Carefully painted and decorated, the artwork glittered in the sunlight." (Note: Answer Key lists BOTH A and B!)',
+            options: [
+              'painted',
+              'decorated',
+              'glittered',
+              'sunlight'
+            ],
+            correct: [0, 1],
+            explanation: 'Answer Key (A and B): Both "painted" and "decorated" are participles used as adjectives modifying "artwork".'
+          },
+          {
+            q: '14) Identify the participial phrase: "Scratching her head, Ximena tried to figure out the problem."',
+            options: [
+              'Scratching her head',
+              'Ximena tried',
+              'to figure out',
+              'the problem'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): "Scratching her head"'
+          },
+          {
+            q: '15) Complete the sentence with the correct participle: "The child (   ) to music can play computer games well."',
+            options: [
+              'listen',
+              'is listening',
+              'listening',
+              'listened'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): "listening" (The child listening to music...).'
+          }
+        ]
+      },
+      {
+        id: 'topic2',
+        badge: 'TOPIC 2',
+        title: 'Participles & Participial Phrases',
+        subtitle: 'Distinguishing verbs vs. participles and identifying modified nouns',
+        type: 'mcq',
+        color: 'cyan',
+        questions: [
+          {
+            q: '1) True or False? A participle modifies a verb.',
+            options: [
+              'True',
+              'False'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): False — a participle usually modifies a noun or pronoun.'
+          },
+          {
+            q: '2) True or False? If a word ends in -ed or -ing, it must be a verb.',
+            options: [
+              'True',
+              'False'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): False — an -ed or -ing ending does not automatically make a word a verb (it can be a participle or gerund).'
+          },
+          {
+            q: '3) What type of phrase is highlighted? "[Trembling with rage], she stalked out."',
+            options: [
+              'infinitive',
+              'participial',
+              'gerund',
+              'appositive'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): participial phrase modifying "she".'
+          },
+          {
+            q: '4) What is the highlighted word modifying (describing) in the following sentence? "Tara was getting worried that she may not pass the math test, [thinking] how little she knew about equations."',
+            options: [
+              'Tara',
+              'test',
+              'she',
+              'equations'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Tara.'
+          },
+          {
+            q: '5) How is the highlighted word functioning in the following sentence? "After the game, the [losing] team went home with no trophy."',
+            options: [
+              'verb',
+              'adjective',
+              'direct object',
+              'subject'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): adjective (modifying "team").'
+          },
+          {
+            q: '6) Is the highlighted word/phrase a VERB or a PARTICIPLE? "Cindy appeared very graceful while she [was jumping] over the hurdles."',
+            options: [
+              'verb/verb phrase',
+              'participle/participle phrase'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): verb/verb phrase ("was jumping").'
+          },
+          {
+            q: '7) Is the highlighted word/phrase a VERB or a PARTICIPLE? "Jill and Terry were [tired] from working out in the yard."',
+            options: [
+              'verb/verb phrase',
+              'participle/participle phrase'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): participle/participle phrase ("tired" is used adjectivally).'
+          },
+          {
+            q: '8) What word begins a participial phrase?',
+            options: [
+              'a word with a verb word ending',
+              'a, an, the',
+              'prepositions',
+              'a noun'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): a word with a verb ending (-ing, -ed, etc.).'
+          },
+          {
+            q: '9) How does a participial phrase function in a sentence?',
+            options: [
+              'It shows a relationship between two words.',
+              'It describes the noun next to it.',
+              'It renames the noun in front of it.',
+              'It is the action in the sentence.'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): It describes the noun next to it.'
+          },
+          {
+            q: '10) What is the name of the noun that is part of the prepositional phrase?',
+            options: [
+              'Noun of the preposition',
+              'Object of the preposition',
+              'Object of the sentence',
+              'Noun of the sentence'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): Object of the preposition.'
+          },
+          {
+            q: '11) What noun is the participial phrase modifying? "Quickly checking over his answers, Patrick handed in his test just before time ran out."',
+            options: [
+              'Patrick',
+              'answers',
+              'test',
+              'ran'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Patrick.'
+          },
+          {
+            q: '12) What is the participial phrase in the following sentence? "Sweeping across the night sky, the bats hunted their prey."',
+            options: [
+              'Sweeping across the night sky,',
+              'the bats hunted',
+              'hunted their prey.',
+              'across the night sky'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): "Sweeping across the night sky,"'
+          }
+        ]
+      },
+      {
+        id: 'topic3',
+        badge: 'TOPIC 3',
+        title: 'Persuasion & Sentence Structure',
+        subtitle: 'Aristotle’s persuasive appeals, subjects, predicates, and parts of speech',
+        type: 'mcq',
+        color: 'emerald',
+        questions: [
+          {
+            q: '1) Which word means a device used by an author to get the audience to think or feel a certain way?',
+            options: [
+              'pathos',
+              'appeal',
+              'ethos',
+              'topic'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): appeal.'
+          },
+          {
+            q: '2) Which word means the act or process of making people believe or think something?',
+            options: [
+              'logic',
+              'topic',
+              'persuade',
+              'emotions'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): persuade.'
+          },
+          {
+            q: '3) Who was the philosopher that identified the three types of persuasion?',
+            options: [
+              'Aristotle',
+              'Martin Luther',
+              'Patrick Henry',
+              'John Proctor'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Aristotle.'
+          },
+          {
+            q: '4) What type of persuasive appeal is used when an ad includes a celebrity, person in uniform, or expert?',
+            options: [
+              'ethos',
+              'pathos',
+              'logos',
+              'topic'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos (appeal to authority/credibility).'
+          },
+          {
+            q: '5) When an author uses emotions such as fear, pride, desire, or sympathy, the author is using what type of persuasive appeal?',
+            options: [
+              'ethos',
+              'pathos',
+              'logos',
+              'topic'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): pathos.'
+          },
+          {
+            q: '6) Martin Luther King Jr. was a church minister who had an educational degree in theology. This helped him to gain _____ during the Civil Rights Movement.',
+            options: [
+              'higher pay at his job',
+              'ethos',
+              'advertisements',
+              'logos'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): ethos.'
+          },
+          {
+            q: '7) Patrick Henry gave a speech to the 1775 Virginia Convention. He uses _____ when he tells the convention that they should be worried about giving up their freedom for peace.',
+            options: [
+              'pathos',
+              'ethos',
+              'logos',
+              'advertisements'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): pathos.'
+          },
+          {
+            q: '8) In a letter to the president, the governor of North Carolina included credible facts and numbers about how offshore drilling for oil could be bad for jobs and the coastline. This is an example of _____.',
+            options: [
+              'ethos',
+              'logos',
+              'pathos',
+              'parts of speech'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): logos.'
+          },
+          {
+            q: '9) Why is it important to learn about persuasive appeals?',
+            options: [
+              'persuasion happens all around us',
+              'persuasion can be used to hurt others',
+              'we can make more informed decisions',
+              'all of the above'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): all of the above.'
+          },
+          {
+            q: '10) Which part of a sentence must contain the verb of the sentence?',
+            options: [
+              'subject',
+              'complete thought',
+              'predicate',
+              'pronoun'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): predicate.'
+          },
+          {
+            q: '11) What type of predicate do you need if you have a singular subject?',
+            options: [
+              'plural',
+              'singular',
+              'action',
+              'being'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): singular (subject-verb agreement).'
+          },
+          {
+            q: '12) What two parts of speech can be used as the subject of the sentence?',
+            options: [
+              'pronoun and being verb',
+              'noun and action verb',
+              'noun and being verb',
+              'noun and pronoun'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): noun and pronoun.'
+          },
+          {
+            q: '13) Which part of speech takes the place of a noun?',
+            options: [
+              'noun',
+              'action verb',
+              'pronoun',
+              'being verb'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): pronoun.'
+          },
+          {
+            q: '14) What does plural mean?',
+            options: [
+              'person, place, thing, or idea',
+              'one',
+              'more than one',
+              'takes place of a noun'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): more than one.'
+          },
+          {
+            q: '15) What is the subject of the following sentence? "The students are taking a test."',
+            options: [
+              'test',
+              'are',
+              'taking',
+              'students'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): students.'
+          },
+          {
+            q: '16) What is the verb of the following sentence? "The teacher taught the students about the sermon."',
+            options: [
+              'teacher',
+              'taught',
+              'students',
+              'sermon'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): taught.'
+          }
+        ]
+      },
+      {
+        id: 'topic4',
+        badge: 'TOPIC 4',
+        title: 'Ethos, Pathos, Logos & Rhetorical Techniques',
+        subtitle: 'Includes fill-in-the-blank and quote-matching questions formatted for 1-4 keys',
+        type: 'mcq',
+        color: 'violet',
+        questions: [
+          {
+            q: '1) "As a doctor, I am qualified to tell you that this course of treatment will likely generate the best results."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos (medical qualification establishes credibility).'
+          },
+          {
+            q: '2) "If my age doesn\'t convince you that I know what I\'m talking about, my many years of college education should convince you."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos (experience and education).'
+          },
+          {
+            q: '3) "You\'ll make the right decision because you have something not many people do: you have heart, you care and are kind."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): pathos (appealing to heart, care, and kindness).'
+          },
+          {
+            q: '4) "If we don\'t make a decision soon, we\'ll have a devastating, horrible and stressful future. It is dangerous for you to not pick a side for us."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): pathos (using fear and loaded emotional adjectives).'
+          },
+          {
+            q: '5) "History has shown time and again—Stalin, Ivan IV, Idi Amin—that absolute power corrupts absolutely."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): logos (historical evidence and logical pattern).'
+          },
+          {
+            q: '6) Which appeal is used to make the audience trust you and your credibility?',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos.'
+          },
+          {
+            q: '7) Which appeal uses facts, cause and effect and rational reason to persuade their audience?',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): logos.'
+          },
+          {
+            q: '8) Which appeal persuades the audience by thinking of their hopes, fears and what they care about?',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): pathos.'
+          },
+          {
+            q: '9) "You know me—I\'ve taught Sunday School at your church for years and babysat all of your children. You know I can run your preschool."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos.'
+          },
+          {
+            q: '10) "You should consider another route if you leave after the sunset. Driving down that street is far more dangerous at night because I see a lot of robberies going on."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): logos (cause-and-effect reasoning based on observed robberies).'
+          },
+          {
+            q: '11) "Private demand for the product has decreased for the past three years, and this year\'s sales are at an all-time low. It\'s time to research other options."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): logos (sales trends and logical deduction).'
+          },
+          {
+            q: '12) Fill in the blank: "The _____ appeal uses cause and effect and common sense to persuade the audience."',
+            options: [
+              'ethos',
+              'pathos',
+              'logos',
+              'kairos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key: logos — The logos appeal uses cause and effect and common sense.'
+          },
+          {
+            q: '13) Fill in the blank: "Connotative diction and imagery are techniques used to appeal to someone\'s _____."',
+            options: [
+              'logic',
+              'emotions',
+              'credibility',
+              'experience'
+            ],
+            correct: [1],
+            explanation: 'Answer Key: emotions — Connotative diction and imagery appeal to emotions.'
+          },
+          {
+            q: '14) Fill in the blank: "Personal _____ helps build your ethos when trying to persuade your audience."',
+            options: [
+              'statistics',
+              'imagery',
+              'experience',
+              'fear'
+            ],
+            correct: [2],
+            explanation: 'Answer Key: experience — Personal experience helps build ethos.'
+          },
+          {
+            q: '15) Match each quote to its rhetorical technique:\n(1) "We cannot allow discrimination to continue to our students."\n(2) "Should schools be a safe place for everyone?"\n(3) "We are cold, alone and rejected when we cannot enter or hang out at school."\n(4) "Not having an hour lunch is like being in a prison..."\n(5) "According to experts in education..."',
+            options: [
+              '1-Plural pronouns, 2-Rhetorical question, 3-Magic 3s (connotative diction), 4-Figurative language, 5-Expert testimony',
+              '1-Expert testimony, 2-Magic 3s, 3-Plural pronouns, 4-Rhetorical question, 5-Figurative language',
+              '1-Rhetorical question, 2-Plural pronouns, 3-Figurative language, 4-Expert testimony, 5-Magic 3s',
+              '1-Figurative language, 2-Expert testimony, 3-Rhetorical question, 4-Plural pronouns, 5-Magic 3s'
+            ],
+            correct: [0],
+            explanation: 'Answer Key: 1-Plural pronouns ("We"), 2-Rhetorical question, 3-Magic 3s ("cold, alone and rejected"), 4-Figurative language ("like being in a prison"), 5-Expert testimony.'
+          },
+          {
+            q: '16) Match the techniques to their rhetorical appeal: (1) Cause and Effect, (2) Personal Experience, (3) Imagery',
+            options: [
+              '1-Pathos, 2-Logos, 3-Ethos',
+              '1-Ethos, 2-Pathos, 3-Logos',
+              '1-Logos, 2-Ethos, 3-Pathos',
+              '1-Logos, 2-Pathos, 3-Ethos'
+            ],
+            correct: [2],
+            explanation: 'Answer Key: Cause and Effect → Logos; Personal Experience → Ethos; Imagery → Pathos.'
+          },
+          {
+            q: '17) "Research has found that 65% of students who do not pass the STAAR test are 10 times more likely to not graduate high school."',
+            options: [
+              'Logos',
+              'Ethos',
+              'Pathos'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Logos (statistical research data).'
+          }
+        ]
+      },
+      {
+        id: 'topic5',
+        badge: 'TOPIC 5',
+        title: 'Making Inferences',
+        subtitle: 'Drawing logical conclusions from textual clues and context',
+        type: 'mcq',
+        color: 'amber',
+        questions: [
+          {
+            q: '1) Grandpa sees that his chocolate cake is all gone. Brad has crumbs on his mouth. What do you think happened?',
+            options: [
+              'Brad baked his own cake.',
+              'Brad needs to brush his teeth better.',
+              "Brad ate Grandpa's chocolate cake.",
+              'Brad ate Grandpa'
+            ],
+            correct: [2],
+            explanation: "Answer Key (C): Brad ate Grandpa's chocolate cake."
+          },
+          {
+            q: '2) Gavin plays baseball and accidentally breaks a window. How do you think he feels?',
+            options: [
+              'He is scared of getting in trouble.',
+              'He feels happy and excited he threw the ball so hard.',
+              "He can't wait to break another window.",
+              'He is thinking he should study his spelling words.'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): He is scared of getting in trouble.'
+          },
+          {
+            q: '3) The desert is a very hot, dry place. How might a coyote stay cool?',
+            options: [
+              'Sleep during the day and hunt at night.',
+              'Take a bath in the lake.',
+              'Grow thicker fur.',
+              'Build a home using a cactus.'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Sleep during the day and hunt at night.'
+          },
+          {
+            q: '4) Which detail tells you that Mrs. McCoy is hungry?',
+            options: [
+              'Her eyes filling up with tears.',
+              'She is limping around the room.',
+              'She starts reading a book.',
+              'Her stomach growls loudly.'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): Her stomach growls loudly.'
+          },
+          {
+            q: "5) Isabel's soccer team cheered. The coach gave them a trophy. What do you think happened?",
+            options: [
+              'They missed the goal.',
+              'The coach got kicked out of the game.',
+              'They won the game.',
+              'The other team won the game.'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): They won the game.'
+          },
+          {
+            q: '6) Tate stamps his feet and crosses his arms. How do you think he feels?',
+            options: [
+              'joyful',
+              'tearful',
+              'lonely',
+              'angry'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): angry.'
+          },
+          {
+            q: '7) Many animals in the forest eat insects. Why might one kind of insect look like a stick?',
+            options: [
+              'To stand out in the forest',
+              'To blend into the forest',
+              'To warn animals not to eat it',
+              'To move faster in the trees'
+            ],
+            correct: [1],
+            explanation: 'Answer Key (B): To blend into the forest (camouflage).'
+          },
+          {
+            q: '8) How might a character act if he felt sad?',
+            options: [
+              'Put his head down and sigh',
+              'Yell and jump up and down',
+              'Smile and wave',
+              'Laugh until his sides hurt'
+            ],
+            correct: [0],
+            explanation: 'Answer Key (A): Put his head down and sigh.'
+          },
+          {
+            q: '9) What might Kimberly do when she is worried?',
+            options: [
+              'Practice Dancing',
+              'Take a nap in her chair',
+              'Play a board game',
+              'Pace back and forth'
+            ],
+            correct: [3],
+            explanation: 'Answer Key (D): Pace back and forth.'
+          },
+          {
+            q: '10) Penguins live in cold, windy places and gather in large groups. Why do you think they stand close together?',
+            options: [
+              'To hunt for fish more easily',
+              'To dance',
+              'To stay warm',
+              'To hide from their predators'
+            ],
+            correct: [2],
+            explanation: 'Answer Key (C): To stay warm.'
+          }
+        ]
+      },
+      {
+        id: 'topic6',
+        badge: 'TOPIC 6',
+        title: 'Rhetorical Appeals (30-Question Drill)',
+        subtitle: 'Deep mastery of Ethos, Pathos, Logos, and Kairos across 30 scenarios',
+        type: 'mcq',
+        color: 'rose',
+        questions: [
+          {
+            q: '1) What is the primary focus of ethos in rhetoric?',
+            options: ['Emotional appeal', 'Ethical appeal', 'Logical appeal', 'Visual appeal'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethical appeal.'
+          },
+          {
+            q: '2) Which of the following is an example of pathos?',
+            options: ['A speaker citing their credentials', 'A commercial showing happy families', 'A statistic about climate change', 'A diagram explaining a process'],
+            correct: [1],
+            explanation: 'Answer Key (B): A commercial showing happy families.'
+          },
+          {
+            q: '3) Logos is best described as an appeal to:',
+            options: ['Emotion', 'Ethics', 'Logic', 'Authority'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logic.'
+          },
+          {
+            q: '4) Identify the rhetorical appeal used in the following statement: "As a doctor, I can assure you that this treatment is safe."',
+            options: ['Pathos', 'Ethos', 'Logos', 'Mythos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethos.'
+          },
+          {
+            q: '5) Which rhetorical appeal is primarily used when a speaker uses statistics to support their argument?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Kairos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos.'
+          },
+          {
+            q: '6) A charity advertisement shows images of suffering animals to encourage donations. Which appeal is being used?',
+            options: ['Ethos', 'Pathos', 'Logos', 'Mythos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Pathos.'
+          },
+          {
+            q: '7) Which of the following best describes the use of ethos in a speech?',
+            options: ['Using emotional stories to connect with the audience', 'Presenting logical arguments and evidence', "Establishing the speaker's credibility and trustworthiness", 'Using vivid imagery to paint a picture'],
+            correct: [2],
+            explanation: "Answer Key (C): Establishing the speaker's credibility and trustworthiness."
+          },
+          {
+            q: '8) What is the main purpose of using pathos in an argument?',
+            options: ['To establish credibility', "To appeal to the audience's emotions", 'To provide logical reasoning', 'To present factual evidence'],
+            correct: [1],
+            explanation: "Answer Key (B): To appeal to the audience's emotions."
+          },
+          {
+            q: '9) In a debate, a speaker references a well-known expert to support their argument. Which rhetorical appeal is this?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Kairos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethos.'
+          },
+          {
+            q: '10) Which of the following is NOT a characteristic of logos?',
+            options: ['Use of statistics', 'Emotional storytelling', 'Logical reasoning', 'Factual evidence'],
+            correct: [1],
+            explanation: 'Answer Key (B): Emotional storytelling belongs to Pathos, not Logos.'
+          },
+          {
+            q: '11) A politician tells a personal story about their childhood to connect with voters. Which appeal is being used?',
+            options: ['Ethos', 'Pathos', 'Logos', 'Mythos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Pathos.'
+          },
+          {
+            q: '12) Which rhetorical appeal is most effective when trying to persuade an audience with facts and data?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Kairos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos.'
+          },
+          {
+            q: '13) Identify the appeal used in this statement: "Our product has been endorsed by leading scientists."',
+            options: ['Pathos', 'Ethos', 'Logos', 'Mythos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethos.'
+          },
+          {
+            q: '14) Which appeal is being used when a speaker tries to evoke sympathy from the audience?',
+            options: ['Ethos', 'Pathos', 'Logos', 'Kairos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Pathos.'
+          },
+          {
+            q: '15) A speaker uses a series of logical steps to arrive at a conclusion. Which rhetorical appeal is this?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Mythos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos.'
+          },
+          {
+            q: '16) Which rhetorical appeal is used when a speaker emphasizes their own experience to gain trust?',
+            options: ['Mythos', 'Logos', 'Ethos', 'Pathos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Ethos.'
+          },
+          {
+            q: '17) What type of appeal is being used when a speaker uses vivid imagery to evoke feelings in the audience?',
+            options: ['Kairos', 'Logos', 'Pathos', 'Ethos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Pathos.'
+          },
+          {
+            q: '18) In a persuasive essay, which appeal is most effective for presenting a well-structured argument?',
+            options: ['Pathos', 'Mythos', 'Ethos', 'Logos'],
+            correct: [3],
+            explanation: 'Answer Key (D): Logos.'
+          },
+          {
+            q: '19) Which rhetorical appeal is being used when a speaker shares a personal success story to inspire the audience?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Mythos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Pathos (inspiring feelings in the audience).'
+          },
+          {
+            q: '20) What type of appeal is used when a speaker uses historical examples to support their argument?',
+            options: ['Mythos', 'Logos', 'Ethos', 'Pathos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Logos.'
+          },
+          {
+            q: '21) Which appeal is being used when a speaker uses a well-known quote to add weight to their argument?',
+            options: ['Ethos', 'Kairos', 'Logos', 'Pathos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos.'
+          },
+          {
+            q: '22) Which rhetorical appeal is used when a speaker uses a personal anecdote to build rapport with the audience?',
+            options: ['Logos', 'Ethos', 'Kairos', 'Pathos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethos (a personal anecdote can build trust and rapport).'
+          },
+          {
+            q: '23) What type of appeal is being used when a speaker references a recent event to make their argument more relevant?',
+            options: ['Kairos', 'Logos', 'Pathos', 'Ethos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Kairos (appeal to timeliness/urgency).'
+          },
+          {
+            q: '24) Which appeal is being used when a speaker uses a metaphor to create a vivid image in the audience\'s mind?',
+            options: ['Logos', 'Ethos', 'Pathos', 'Mythos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Pathos.'
+          },
+          {
+            q: '25) Which rhetorical appeal is being used when a speaker uses a famous person\'s endorsement to strengthen their argument?',
+            options: ['Mythos', 'Logos', 'Ethos', 'Pathos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Ethos.'
+          },
+          {
+            q: '26) What type of appeal is being used when a speaker tells a heartwarming story to connect with the audience?',
+            options: ['Pathos', 'Logos', 'Ethos', 'Kairos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Pathos.'
+          },
+          {
+            q: '27) Which rhetorical appeal is most effective when a speaker uses clear and logical arguments to persuade the audience?',
+            options: ['Mythos', 'Ethos', 'Logos', 'Pathos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos.'
+          },
+          {
+            q: '28) Which rhetorical appeal is being used when a speaker uses humor to engage the audience?',
+            options: ['Kairos', 'Logos', 'Ethos', 'Pathos'],
+            correct: [3],
+            explanation: 'Answer Key (D): Pathos.'
+          },
+          {
+            q: '29) What type of appeal is being used when a speaker cites a legal precedent to support their argument?',
+            options: ['Mythos', 'Logos', 'Ethos', 'Pathos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Logos.'
+          },
+          {
+            q: '30) Which appeal is being used when a speaker highlights their own expertise in the field to persuade the audience?',
+            options: ['Pathos', 'Ethos', 'Logos', 'Kairos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Ethos.'
+          }
+        ]
+      },
+      {
+        id: 'topic7',
+        badge: 'TOPIC 7',
+        title: 'Rhetorical Devices in Advertisements',
+        subtitle: 'Analyzing commercials, product claims, and persuasive ad strategies',
+        type: 'mcq',
+        color: 'fuchsia',
+        questions: [
+          {
+            q: '1) An advertisement that uses this rhetorical device will try to get you to see the company as reliable, honest and credible.',
+            options: ['ethos', 'pathos', 'logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): ethos.'
+          },
+          {
+            q: '2) This rhetorical device refers to an argument that appeals to logic.',
+            options: ['ethos', 'pathos', 'logos'],
+            correct: [2],
+            explanation: 'Answer Key (C): logos.'
+          },
+          {
+            q: '3) This rhetorical device refers to an argument that appeals to one\'s emotions.',
+            options: ['ethos', 'pathos', 'logos'],
+            correct: [1],
+            explanation: 'Answer Key (B): pathos.'
+          },
+          {
+            q: '4) Select the PREDOMINANT rhetorical device targeted: "There\'s no price that can be placed on peace of mind. Our advanced security systems will protect the well-being of your family so that you can sleep soundly at night."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Pathos (appealing to family safety and peace of mind).'
+          },
+          {
+            q: '5) Select the PREDOMINANT rhetorical device targeted: A child is shown covered in bug bites after using an inferior bug spray.',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [1],
+            explanation: 'Answer Key (B): Pathos (evoking sympathy and concern).'
+          },
+          {
+            q: '6) Select the PREDOMINANT rhetorical device targeted: Cardiologists recommend Ecotrin more than any other brand of aspirin.',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Ethos (medical specialist recommendation).'
+          },
+          {
+            q: '7) "Sprite Zero is 100% sugar-free."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos (factual product specification).'
+          },
+          {
+            q: '8) "A 32-oz. bottle of Tide holds enough to wash 32 loads."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos (quantitative measurement).'
+          },
+          {
+            q: '9) "You know me - I\'ve taught Sunday School at your church for years, babysat your children, and served as a playground director for many summers."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Ethos (community trust and track record).'
+          },
+          {
+            q: '10) "In 25 years of driving the same route, I haven\'t seen a single deer."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Ethos (long-term personal experience).'
+          },
+          {
+            q: '11) "As a doctor, I am qualified to tell you that this course of treatment will likely generate the best results."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Ethos.'
+          },
+          {
+            q: '12) "Advil Liquid-Gels provide up to 8 hours of continuous pain relief."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [2],
+            explanation: 'Answer Key (C): Logos (specific timeframe claim).'
+          },
+          {
+            q: '13) "Our expertise in roofing contracting is evidenced not only by our 100 years in the business and our staff of qualified technicians, but in the decades of satisfied customers who have come to expect nothing but the best."',
+            options: ['Ethos', 'Pathos', 'Logos'],
+            correct: [0],
+            explanation: 'Answer Key (A): Ethos (100 years of expertise and qualified technicians).'
+          }
+        ]
+      },
+      {
+        id: 'topic8',
+        badge: 'GRAMMAR PACK',
+        title: 'Gerunds, Participles & Noun Types',
+        subtitle: '30-question Grammar Master Revision Pack with rule justifications + Cheat Sheet',
+        type: 'mcq',
+        hasCheatSheet: true,
+        color: 'teal',
+        questions: [
+          {
+            q: '1) Which word is a gerund in "Jogging clears my mind"?',
+            options: ['clears', 'mind', 'Jogging', 'my'],
+            correct: [2],
+            explanation: 'C - Jogging. Jogging names the activity and serves as the subject.'
+          },
+          {
+            q: '2) What is the function of "painting" in "Maya enjoys painting"?',
+            options: ['Subject', 'Direct object', 'Predicate nominative', 'Object of preposition'],
+            correct: [1],
+            explanation: 'B - Direct object. Painting receives the action of enjoys, so it is the direct object.'
+          },
+          {
+            q: '3) Which sentence contains a gerund as subject?',
+            options: ['The laughing baby slept.', 'Dancing builds confidence.', 'The painted wall dried.', 'She was dancing.'],
+            correct: [1],
+            explanation: 'B - Dancing builds confidence. Dancing names an activity that performs the subject role.'
+          },
+          {
+            q: '4) Identify the gerund\'s function: "His favorite pastime is hiking."',
+            options: ['Subject', 'Direct object', 'Predicate nominative', 'Object of preposition'],
+            correct: [2],
+            explanation: 'C - Predicate nominative. Hiking follows linking verb is and renames pastime.'
+          },
+          {
+            q: '5) Identify the gerund\'s function: "They talked about camping."',
+            options: ['Subject', 'Direct object', 'Predicate nominative', 'Object of preposition'],
+            correct: [3],
+            explanation: 'D - Object of preposition. Camping follows the preposition about.'
+          },
+          {
+            q: '6) Which is the full gerund phrase in "Collecting rare stamps takes patience"?',
+            options: ['Collecting', 'rare stamps', 'Collecting rare stamps', 'takes patience'],
+            correct: [2],
+            explanation: 'C - Collecting rare stamps. The gerund collecting and its object rare stamps together form the subject phrase.'
+          },
+          {
+            q: '7) Which sentence has a gerund as direct object?',
+            options: ['Writing is relaxing.', 'He dislikes waiting.', 'The waiting crowd cheered.', 'She is waiting.'],
+            correct: [1],
+            explanation: "B - He dislikes waiting. Waiting answers 'dislikes what?'"
+          },
+          {
+            q: '8) In "Before leaving, check the lights," leaving is a(n) ___',
+            options: ['adjective', 'gerund', 'finite verb', 'abstract noun'],
+            correct: [1],
+            explanation: 'B - gerund. Leaving is the object of preposition before.'
+          },
+          {
+            q: '9) Which sentence uses swimming as a participle?',
+            options: ['Swimming is fun.', 'I love swimming.', 'The swimming otter surfaced.', 'We discussed swimming.'],
+            correct: [2],
+            explanation: 'C - The swimming otter surfaced. Swimming describes the noun otter.'
+          },
+          {
+            q: '10) What does a participle usually do?',
+            options: ['Acts as noun', 'Acts as adjective', 'Joins clauses', 'Replaces preposition'],
+            correct: [1],
+            explanation: 'B - Acts as adjective. A participle modifies a noun or pronoun.'
+          },
+          {
+            q: '11) Identify the participle: "The cracked mirror hung crookedly."',
+            options: ['mirror', 'hung', 'crookedly', 'cracked'],
+            correct: [3],
+            explanation: 'D - cracked. Cracked describes mirror.'
+          },
+          {
+            q: '12) Identify the participial phrase: "Exhausted by the climb, Leo rested."',
+            options: ['Leo rested', 'by the climb, Leo', 'Exhausted by the climb', 'the climb'],
+            correct: [2],
+            explanation: 'C - Exhausted by the climb. The full phrase modifies Leo.'
+          },
+          {
+            q: '13) Which noun is modified in "The girl wearing a blue scarf waved"?',
+            options: ['scarf', 'girl', 'blue', 'waved'],
+            correct: [1],
+            explanation: 'B - girl. Wearing a blue scarf describes girl.'
+          },
+          {
+            q: '14) In "Frightened by the alarm, the students ran outside," the phrase ends after ...',
+            options: ['Frightened', 'alarm', 'students', 'ran'],
+            correct: [1],
+            explanation: 'B - alarm. By the alarm completes the participial phrase; students begins the main clause.'
+          },
+          {
+            q: '15) Which sentence contains a past participle used as adjective?',
+            options: ['The window broke.', 'The broken window rattled.', 'They broke the window.', 'The window was breaking.'],
+            correct: [1],
+            explanation: 'B - The broken window rattled. Broken describes window.'
+          },
+          {
+            q: '16) Which sentence contains a present participial phrase?',
+            options: ['Reading is useful.', 'She likes reading.', 'The man carrying boxes stumbled.', 'Reading improves memory.'],
+            correct: [2],
+            explanation: 'C - The man carrying boxes stumbled. Carrying boxes describes man.'
+          },
+          {
+            q: '17) In "The glowing lantern lit the path," glowing is a ...',
+            options: ['gerund', 'participle', 'preposition', 'abstract noun'],
+            correct: [1],
+            explanation: 'B - participle. Glowing modifies lantern.'
+          },
+          {
+            q: '18) Which is a concrete noun?',
+            options: ['wisdom', 'hope', 'thunder', 'justice'],
+            correct: [2],
+            explanation: 'C - thunder. Thunder can be heard.'
+          },
+          {
+            q: '19) Which is an abstract noun?',
+            options: ['pencil', 'loyalty', 'orange', 'river'],
+            correct: [1],
+            explanation: 'B - loyalty. Loyalty is a quality rather than a thing sensed directly.'
+          },
+          {
+            q: '20) Which sentence contains an abstract noun?',
+            options: ['The kettle whistled.', 'She admired his bravery.', 'The puppy barked.', 'The door slammed.'],
+            correct: [1],
+            explanation: 'B - She admired his bravery. Bravery is an abstract quality.'
+          },
+          {
+            q: '21) Which pair contains only concrete nouns?',
+            options: ['trust and pride', 'honesty and lamp', 'violin and candle', 'fear and courage'],
+            correct: [2],
+            explanation: 'C - violin and candle. Both violin and candle can be perceived by the senses.'
+          },
+          {
+            q: '22) Which pair contains only abstract nouns?',
+            options: ['freedom and patience', 'table and peace', 'cloud and sadness', 'bell and wisdom'],
+            correct: [0],
+            explanation: 'A - freedom and patience. Freedom and patience are ideas/qualities.'
+          },
+          {
+            q: '23) Which is NOT a concrete noun?',
+            options: ['fragrance', 'music', 'jealousy', 'snow'],
+            correct: [2],
+            explanation: 'C - jealousy. Jealousy is an emotion.'
+          },
+          {
+            q: '24) Identify the function of "baking" in "Baking bread is her specialty."',
+            options: ['Subject', 'Direct object', 'Predicate nominative', 'Object of preposition'],
+            correct: [0],
+            explanation: 'A - Subject. The gerund phrase Baking bread is the subject.'
+          },
+          {
+            q: '25) Which is the complete gerund phrase: "She succeeded by practicing daily"?',
+            options: ['by practicing', 'practicing daily', 'She succeeded', 'daily'],
+            correct: [1],
+            explanation: 'B - practicing daily. Practicing plus its modifier daily forms the gerund phrase; by is outside it.'
+          },
+          {
+            q: '26) Which word is a participle in "The rescued hikers thanked us"?',
+            options: ['hikers', 'thanked', 'rescued', 'us'],
+            correct: [2],
+            explanation: 'C - rescued. Rescued modifies hikers.'
+          },
+          {
+            q: '27) In "The chef was chopping onions," chopping is part of ...',
+            options: ['a progressive verb phrase', 'a gerund subject', 'a participial adjective', 'an abstract noun'],
+            correct: [0],
+            explanation: 'A - a progressive verb phrase. Was chopping is the progressive verb, not a gerund or adjectival participle.'
+          },
+          {
+            q: '28) Which sentence uses "drawing" as a predicate nominative?',
+            options: ['Drawing is difficult.', 'They practiced drawing.', 'Her passion is drawing.', 'She improved by drawing.'],
+            correct: [2],
+            explanation: 'C - Her passion is drawing. Drawing follows linking verb is and renames passion.'
+          },
+          {
+            q: '29) Which sentence uses an -ing word as an adjective?',
+            options: ['Cycling saves fuel.', 'He prefers cycling.', 'The cycling team won.', 'She spoke about cycling.'],
+            correct: [2],
+            explanation: 'C - The cycling team won. Cycling modifies team.'
+          },
+          {
+            q: '30) Choose the correct statement about participial phrases.',
+            options: ['They always act as subjects.', 'They describe nouns or pronouns.', 'They are always complete sentences.', 'They only contain past participles.'],
+            correct: [1],
+            explanation: 'B - They describe nouns or pronouns. Participial phrases work adjectivally and may use present or past participles.'
+          }
+        ]
+      },
+      {
+        id: 'literature',
+        badge: 'GRADE 11 LIT',
+        title: 'Literature: Equiano & Emily Dickinson',
+        subtitle: 'All 13 Open-Ended Exam Questions with Model Answers & Self-Grading',
+        type: 'open',
+        color: 'orange',
+        questions: [
+          {
+            q: '1. (a) Analyze: Why does Equiano blame the illness aboard the ship on the "improvident avarice" of the traders?\n(b) Make Inferences: How do the crewmen view their captives?\n(c) Draw Conclusions: What does the treatment of the captives reveal about the captors\' attitudes toward human life?',
+            answer: '(a) The enslavers are so greedy that they cram people together in a way that leads to sickness and death.\n(b) The white crewmen do not view the captives as fellow human beings.\n(c) The crewmen beat and starve them; they do not have respect for all human life.'
+          },
+          {
+            q: '2. (a) Distinguish: How is Equiano\'s experience on the ship different from that of many of the other captives?\n(b) Interpret: Why do you think that Equiano said he "envied" the "inhabitants of the deep"?',
+            answer: '(a) Equiano\'s illness means that he is kept on deck.\n(b) He envies the freedom of the captives who have jumped overboard to their deaths (who are now "inhabitants of the deep.")'
+          },
+          {
+            q: '3. Analyze: In what ways does Equiano show a zest for life despite his assertion that he wants to die? Provide examples to support your analysis.',
+            answer: 'Equiano is thrilled by the flying fish and curious about the quadrant. (DOK 2)'
+          },
+          {
+            q: '4. Speculate: What do you think the public of Equiano\'s day learned about the "accursed trade" of slavery that it may not have known before reading this narrative?',
+            answer: 'The public would have learned how cruelly the captives were treated during their passage and how confused they were by the events that befell them. (DOK 3)'
+          },
+          {
+            q: '5. What power do you think a story like Equiano\'s would have in influencing the priorities of a nation?',
+            answer: 'A story like Olaudah Equiano\'s has the power to awaken a nation\'s conscience by exposing injustice through personal experience. Rather than presenting slavery as an abstract issue, Equiano allows readers to understand its cruelty, its impact on human dignity, and the suffering of those who experienced it. His story can challenge people\'s beliefs, inspire empathy, influence public opinion, and encourage governments to make justice, equality, and human rights national priorities.'
+          },
+          {
+            q: '6. Discuss how Equiano\'s word choice helps convey the horrible conditions on the ship.',
+            answer: 'Equiano uses powerful and emotionally charged words to describe the terrible conditions aboard the slave ship. His descriptions of the overcrowding, unbearable smell, lack of fresh air, and suffering of the captives create a disturbing picture of their experience. His use of sensory details helps readers imagine the physical discomfort, fear, and helplessness of the enslaved people. His word choice also creates sympathy and exposes the cruelty and inhumanity of the slave trade.'
+          },
+          {
+            q: '7. Discuss the details Equiano shares as the ship reaches land, and what he reveals about himself and the other captives.',
+            answer: 'As the ship approaches land, Equiano describes the captives\' reactions with a mixture of curiosity, fear, and uncertainty. They observe unfamiliar people, surroundings, and activities. Equiano reveals that he is frightened and confused because he does not understand what will happen to him. The other captives also experience anxiety and distress. Their reactions demonstrate their vulnerability, loss of freedom, and uncertainty about their future. Equiano\'s account reveals his strong desire to understand his situation and his determination to survive.'
+          },
+          {
+            q: '8. Reflect on Your Learning: What new ideas or insights did you uncover during your discussion of Equiano\'s narrative?',
+            answer: 'Through discussing Equiano\'s narrative, I discovered how powerful personal stories can be in exposing injustice and influencing society. I learned that slavery was not simply a historical system but a human tragedy that destroyed families, denied individuals their freedom, and violated their dignity. I also realised that education, courage, and the power of storytelling can challenge injustice and inspire social change. Equiano\'s experience reminds me of the importance of defending human rights, equality, and respect for every individual.'
+          },
+          {
+            q: '9. Reading Check (Emily Dickinson):\n(a) In "The Soul selects her own Society —," what leaves the soul "unmoved"?\n(b) In "Fame is a fickle food," what food do the crows prefer to the crumbs left by fame?\n(c) In "They shut me up in Prose —," why do "they" put the little girl in the closet?',
+            answer: '(a) The soul is unmoved by the attention of crowds or even the worship of a king.\n(b) They prefer "Farmer\'s corn," common, wholesome food.\n(c) They want to make her "still" so she won\'t bother anyone with questions or misbehavior.'
+          },
+          {
+            q: '10. Reading Strategy: Generate Questions (Emily Dickinson):\n(a) Cite one question you asked about Dickinson\'s poems before, during, and after reading.\n(b) In what ways, if any, did generating questions deepen your understanding of the poems?',
+            answer: '(a) Before reading: Why does Emily Dickinson frequently explore themes of individuality, freedom, and the human mind in her poetry?\nDuring reading: How does Dickinson use metaphors and symbols, such as the bird in "They shut me up in Prose," to represent intellectual freedom?\nAfter reading: What message does Dickinson want readers to understand about the relationship between individual freedom and society\'s expectations?\n\n(b) Generating questions helped me become a more active and thoughtful reader. It encouraged me to look beyond the literal meaning of the poems, analyse Dickinson\'s use of imagery and symbolism, and explore the deeper messages behind her words. It also helped me recognise how her poems challenge social expectations and celebrate individuality, imagination, and intellectual freedom.'
+          },
+          {
+            q: '11. Compare and Contrast: How are the souls in "The Soul selects her own Society —" and "The Soul unto itself" alike and different? Explain.',
+            answer: 'Both souls are selective about whom they accept. In the first poem, the Soul is confident in her choice and indifferent to outside influence. In the second poem, the Soul stands alone yet is divided.'
+          },
+          {
+            q: '12. (a) Make Inferences: In "They shut me up in Prose —," who do you think "they" are? Explain.\n(b) Interpret: How would you describe the speaker\'s tone, or attitude, toward "them"? Cite specific words that help to establish this tone.\n(c) Evaluate: In what way does the speaker\'s tone affect the poem\'s meaning?',
+            answer: '(a) "They" may refer to the speaker\'s parents or teachers, or to society at large.\n(b) The speaker\'s tone is rebellious or scornful. In particular, the word "still" in quotation marks and the repeated word "Still!" with the added exclamation point help convey this tone.\n(c) Student responses will vary (the tone emphasizes the speaker\'s defiance against confinement and celebrates inner creative freedom).'
+          },
+          {
+            q: '13. (a) What have you learned about individuality and community from reading these poems?\n(b) Do you think some people naturally stand apart from community?',
+            answer: '(a) I have learned that individuality is an important part of human identity and that people should have the freedom to think, express themselves, and make their own choices. Dickinson\'s poems suggest that society sometimes expects individuals to follow certain rules and expectations, even when these restrictions prevent them from expressing their true selves. However, being part of a community does not mean losing one\'s identity. A healthy community should respect differences, encourage creativity, and allow individuals to express their unique perspectives.\n\n(b) Yes, I believe some people naturally stand apart from their communities because they have independent minds, unusual perspectives, or different values and interests. They may question traditions, challenge social expectations, or choose a different path in life. However, being different does not mean being disconnected from others. Such individuals can contribute new ideas, inspire change, and help communities become more open-minded and accepting.'
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // STATE MANAGEMENT & PERSISTENCE
+    // =========================================================================
+    const STORAGE_KEY = 'english_final_exam_progress_v1';
+
+    let state = {
+      view: 'landing', // 'landing' | 'dashboard' | 'quiz' | 'open' | 'summary'
+      activeTopicId: null,
+      quizQuestions: [], // Array of { topicId, topicTitle, qIndex, ...questionObj }
+      currentIndex: 0,
+      selectedOption: null, // Index 0..3 for MCQ
+      isAnswered: false,
+      sessionResults: [], // { q, userChoice, correctIndices, isCorrect, explanation }
+      openRevealed: false,
+      userNotes: '',
+      showCheatSheet: false,
+      progress: loadProgress() // { [topicId]: { [qIndex]: boolean (true if correct/mastered) } }
+    };
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.progress));
+      } catch (e) {
+        // Ignore storage errors
+      }
+      updateHeaderStats();
+    }
+
+    function recordAnswer(topicId, qIndex, isCorrect) {
+      if (!state.progress[topicId]) {
+        state.progress[topicId] = {};
+      }
+      state.progress[topicId][qIndex] = isCorrect;
+      saveProgress();
+    }
+
+    function getTopicStats(topic) {
+      const topicProg = state.progress[topic.id] || {};
+      const total = topic.questions.length;
+      let correct = 0;
+      let attempted = 0;
+      for (let i = 0; i < total; i++) {
+        if (topicProg[i] !== undefined) {
+          attempted++;
+          if (topicProg[i] === true) correct++;
+        }
+      }
+      const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+      return { total, correct, attempted, pct };
+    }
+
+    function getGlobalStats() {
+      let total = 0;
+      let correct = 0;
+      EXAM_TOPICS.forEach(t => {
+        const s = getTopicStats(t);
+        total += s.total;
+        correct += s.correct;
+      });
+      const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+      return { total, correct, pct };
+    }
+
+    function updateHeaderStats() {
+      const g = getGlobalStats();
+      const progEl = document.getElementById('nav-progress-text');
+      const countEl = document.getElementById('nav-solved-count');
+      if (progEl) progEl.textContent = `${g.pct}%`;
+      if (countEl) countEl.textContent = `${g.correct}/${g.total}`;
+    }
+
+    // =========================================================================
+    // NAVIGATION & ACTIONS
+    // =========================================================================
+    function navigateTo(view) {
+      state.view = view;
+      const topNav = document.getElementById('top-nav');
+      if (view === 'landing') {
+        topNav.classList.add('hidden');
+      } else {
+        topNav.classList.remove('hidden');
+      }
+      updateHeaderStats();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startTopic(topicId) {
+      const topic = EXAM_TOPICS.find(t => t.id === topicId);
+      if (!topic) return;
+
+      state.activeTopicId = topicId;
+      state.currentIndex = 0;
+      state.selectedOption = null;
+      state.isAnswered = false;
+      state.sessionResults = [];
+      state.openRevealed = false;
+      state.userNotes = '';
+      state.showCheatSheet = false;
+
+      if (topic.type === 'open') {
+        state.quizQuestions = topic.questions.map((q, idx) => ({
+          ...q,
+          topicId: topic.id,
+          topicTitle: topic.title,
+          qIndex: idx
+        }));
+        navigateTo('open');
+      } else {
+        state.quizQuestions = topic.questions.map((q, idx) => ({
+          ...q,
+          topicId: topic.id,
+          topicTitle: topic.title,
+          qIndex: idx
+        }));
+        navigateTo('quiz');
+      }
+    }
+
+    function startAllMcqs() {
+      const all = [];
+      EXAM_TOPICS.filter(t => t.type === 'mcq').forEach(topic => {
+        topic.questions.forEach((q, idx) => {
+          all.push({
+            ...q,
+            topicId: topic.id,
+            topicTitle: topic.title,
+            qIndex: idx
+          });
+        });
+      });
+
+      state.activeTopicId = 'all_mcqs';
+      state.quizQuestions = all;
+      state.currentIndex = 0;
+      state.selectedOption = null;
+      state.isAnswered = false;
+      state.sessionResults = [];
+      state.showCheatSheet = false;
+      navigateTo('quiz');
+    }
+
+    function selectMcqOption(optionIdx) {
+      if (state.isAnswered) return;
+      const currentQ = state.quizQuestions[state.currentIndex];
+      if (!currentQ || optionIdx < 0 || optionIdx >= currentQ.options.length) return;
+
+      state.selectedOption = optionIdx;
+      state.isAnswered = true;
+
+      const isCorrect = currentQ.correct.includes(optionIdx);
+      recordAnswer(currentQ.topicId, currentQ.qIndex, isCorrect);
+
+      state.sessionResults.push({
+        q: currentQ.q,
+        topicTitle: currentQ.topicTitle,
+        userChoice: currentQ.options[optionIdx],
+        correctChoices: currentQ.correct.map(i => `${['A', 'B', 'C', 'D'][i]}) ${currentQ.options[i]}`),
+        isCorrect,
+        explanation: currentQ.explanation
+      });
+
+      render();
+    }
+
+    function nextQuestion() {
+      if (state.view === 'quiz') {
+        if (!state.isAnswered) return;
+        if (state.currentIndex + 1 < state.quizQuestions.length) {
+          state.currentIndex++;
+          state.selectedOption = null;
+          state.isAnswered = false;
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          navigateTo('summary');
+        }
+      } else if (state.view === 'open') {
+        if (state.currentIndex + 1 < state.quizQuestions.length) {
+          state.currentIndex++;
+          state.openRevealed = false;
+          state.userNotes = '';
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          navigateTo('dashboard');
+        }
+      }
+    }
+
+    function prevOpenQuestion() {
+      if (state.view === 'open' && state.currentIndex > 0) {
+        state.currentIndex--;
+        state.openRevealed = false;
+        state.userNotes = '';
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function revealOpenAnswer() {
+      state.openRevealed = true;
+      render();
+    }
+
+    function gradeOpenQuestion(mastered) {
+      const currentQ = state.quizQuestions[state.currentIndex];
+      if (!currentQ) return;
+      recordAnswer(currentQ.topicId, currentQ.qIndex, mastered);
+      nextQuestion();
+    }
+
+    function toggleCheatSheet() {
+      state.showCheatSheet = !state.showCheatSheet;
+      render();
+    }
+
+    function confirmResetProgress() {
+      showModal(
+        'Reset All Exam Progress?',
+        'This will clear your saved scores and completion bars across all 10 topics so you can practice from scratch.',
+        () => {
+          state.progress = {};
+          saveProgress();
+          render();
+        }
+      );
+    }
+
+    function showModal(title, message, onConfirm) {
+      const modal = document.getElementById('custom-modal');
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-message').textContent = message;
+      modal.classList.remove('hidden');
+
+      const cancelBtn = document.getElementById('modal-cancel');
+      const confirmBtn = document.getElementById('modal-confirm');
+
+      const cleanup = () => {
+        modal.classList.add('hidden');
+        cancelBtn.onclick = null;
+        confirmBtn.onclick = null;
+      };
+
+      cancelBtn.onclick = cleanup;
+      confirmBtn.onclick = () => {
+        cleanup();
+        onConfirm();
+      };
+    }
+
+    // =========================================================================
+    // KEYBOARD SHORTCUTS LISTENER (1, 2, 3, 4 -> A, B, C, D | Enter/Arrow -> Next)
+    // =========================================================================
+    document.addEventListener('keydown', (e) => {
+      // Ignore shortcuts if typing inside textarea or input
+      const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+      if (tag === 'textarea' || tag === 'input') {
+        if (e.key === 'Escape') {
+          document.activeElement.blur();
+        }
+        return;
+      }
+
+      // Close modal on Escape if open
+      const modal = document.getElementById('custom-modal');
+      if (modal && !modal.classList.contains('hidden')) {
+        if (e.key === 'Escape') modal.classList.add('hidden');
+        return;
+      }
+
+      if (state.view === 'landing') {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigateTo('dashboard');
+        }
+        return;
+      }
+
+      if (state.view === 'quiz') {
+        if (['1', '2', '3', '4'].includes(e.key)) {
+          e.preventDefault();
+          selectMcqOption(parseInt(e.key, 10) - 1);
+        } else if ((e.key === 'Enter' || e.key === 'ArrowRight' || e.key === ' ') && state.isAnswered) {
+          e.preventDefault();
+          nextQuestion();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          navigateTo('dashboard');
+        }
+        return;
+      }
+
+      if (state.view === 'open') {
+        if (!state.openRevealed && (e.key === ' ' || e.key === 'Enter')) {
+          e.preventDefault();
+          revealOpenAnswer();
+        } else if (state.openRevealed && e.key === '1') {
+          e.preventDefault();
+          gradeOpenQuestion(true);
+        } else if (state.openRevealed && e.key === '2') {
+          e.preventDefault();
+          gradeOpenQuestion(false);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          nextQuestion();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          prevOpenQuestion();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          navigateTo('dashboard');
+        }
+        return;
+      }
+
+      if (state.view === 'summary') {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+          e.preventDefault();
+          navigateTo('dashboard');
+        }
+      }
+    });
+
+    // =========================================================================
+    // VIEW RENDERERS
+    // =========================================================================
+    function render() {
+      const app = document.getElementById('app');
+      if (state.view === 'landing') {
+        app.innerHTML = renderLandingView();
+      } else if (state.view === 'dashboard') {
+        app.innerHTML = renderDashboardView();
+      } else if (state.view === 'quiz') {
+        app.innerHTML = renderQuizView();
+      } else if (state.view === 'open') {
+        app.innerHTML = renderOpenEndedView();
+      } else if (state.view === 'summary') {
+        app.innerHTML = renderSummaryView();
+      }
+    }
+
+    // 1. LANDING / WELCOME SCREEN
+    function renderLandingView() {
+      const globalStats = getGlobalStats();
+      return `
+        <div class="flex-1 flex items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+          <!-- Ambient Background Glow -->
+          <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+          <div class="absolute bottom-10 right-10 w-[340px] h-[340px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+          <div class="max-w-3xl w-full bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl text-center relative z-10 fade-in">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold tracking-wider uppercase mb-6">
+              <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+              Complete Exam Revision Portal
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-5 leading-tight">
+              ENGLISH FINAL <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400">EXAM WEBSITE</span>
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+              Master every single exam topic—from all 17 vocabulary words and participial phrases to persuasive appeals, grammar rules, and Grade 11 literature open-ended questions.
+            </p>
+
+            <!-- Quick Stats Grid -->
+            <div class="grid grid-cols-3 gap-3 sm:gap-5 max-w-xl mx-auto mb-8">
+              <div class="bg-slate-800/70 border border-slate-700/70 rounded-2xl p-4">
+                <div class="text-2xl sm:text-3xl font-extrabold text-white">10</div>
+                <div class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Exam Topics</div>
+              </div>
+              <div class="bg-slate-800/70 border border-slate-700/70 rounded-2xl p-4">
+                <div class="text-2xl sm:text-3xl font-extrabold text-indigo-400">${globalStats.total}</div>
+                <div class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Total Questions</div>
+              </div>
+              <div class="bg-slate-800/70 border border-slate-700/70 rounded-2xl p-4">
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400">${globalStats.pct}%</div>
+                <div class="text-xs sm:text-sm text-slate-400 font-medium mt-0.5">Your Mastery</div>
+              </div>
+            </div>
+
+            <!-- Keyboard Controls Guide -->
+            <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 sm:p-5 max-w-xl mx-auto mb-9">
+              <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Fast Keyboard Controls</div>
+              <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-xs sm:text-sm text-slate-300">
+                <div class="flex items-center gap-1.5">
+                  <kbd class="keycap font-mono font-bold bg-slate-800 text-indigo-300 px-2 py-1 rounded-lg border border-slate-700">1</kbd>
+                  <span>= A</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <kbd class="keycap font-mono font-bold bg-slate-800 text-indigo-300 px-2 py-1 rounded-lg border border-slate-700">2</kbd>
+                  <span>= B</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <kbd class="keycap font-mono font-bold bg-slate-800 text-indigo-300 px-2 py-1 rounded-lg border border-slate-700">3</kbd>
+                  <span>= C</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <kbd class="keycap font-mono font-bold bg-slate-800 text-indigo-300 px-2 py-1 rounded-lg border border-slate-700">4</kbd>
+                  <span>= D</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <kbd class="keycap font-mono font-bold bg-slate-800 text-emerald-300 px-2.5 py-1 rounded-lg border border-slate-700">Enter</kbd>
+                  <span>= Next</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Primary Start Button -->
+            <button onclick="navigateTo('dashboard')" class="group inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-bold text-lg shadow-xl shadow-indigo-600/30 transition-all cursor-pointer">
+              <span>Start</span>
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. MAIN DASHBOARD (DIVIDED BY TOPICS)
+    function renderDashboardView() {
+      const g = getGlobalStats();
+
+      const badgeColors = {
+        indigo: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/30',
+        sky: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
+        cyan: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+        emerald: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+        violet: 'bg-violet-500/15 text-violet-300 border-violet-500/30',
+        amber: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+        rose: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
+        fuchsia: 'bg-fuchsia-500/15 text-fuchsia-300 border-fuchsia-500/30',
+        teal: 'bg-teal-500/15 text-teal-300 border-teal-500/30',
+        orange: 'bg-orange-500/15 text-orange-300 border-orange-500/30',
+      };
+
+      const cardsHtml = EXAM_TOPICS.map(topic => {
+        const stats = getTopicStats(topic);
+        const isComplete = stats.correct === stats.total && stats.total > 0;
+        const badgeStyle = badgeColors[topic.color] || badgeColors.indigo;
+
+        return `
+          <div class="bg-slate-900 border ${isComplete ? 'border-emerald-500/40' : 'border-slate-800'} hover:border-slate-700 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-lg transition-all">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-1 rounded-lg text-xs font-bold tracking-wider uppercase border ${badgeStyle}">
+                  ${topic.badge}
+                </span>
+                <span class="text-xs font-semibold ${isComplete ? 'text-emerald-400' : 'text-slate-400'}">
+                  ${stats.correct} / ${stats.total} ${topic.type === 'open' ? 'Mastered' : 'Correct'}
+                </span>
+              </div>
+
+              <h3 class="text-lg sm:text-xl font-bold text-white mb-1.5 leading-snug">
+                ${topic.title}
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-400 mb-5 leading-relaxed">
+                ${topic.subtitle}
+              </p>
+            </div>
+
+            <div>
+              <!-- Progress Bar -->
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-4">
+                <div class="h-full ${isComplete ? 'bg-emerald-500' : 'bg-indigo-500'} transition-all duration-300" style="width: ${stats.pct}%"></div>
+              </div>
+
+              <button onclick="startTopic('${topic.id}')" class="w-full py-3 px-4 rounded-xl ${topic.type === 'open' ? 'bg-orange-600 hover:bg-orange-500 shadow-orange-600/20' : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/20'} text-white font-semibold text-sm shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                <span>${topic.type === 'open' ? 'Study Open-Ended' : 'Solve Topic'} (${topic.questions.length} Qs)</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 fade-in">
+          <!-- Dashboard Header Banner -->
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Exam Study Dashboard</h2>
+              <p class="text-sm sm:text-base text-slate-400">
+                Select any topic below to solve its questions, or launch the full 143-question MCQ marathon. Use keys <kbd class="font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-indigo-300">1</kbd> <kbd class="font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-indigo-300">2</kbd> <kbd class="font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-indigo-300">3</kbd> <kbd class="font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-indigo-300">4</kbd> for A, B, C, D.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 shrink-0">
+              <button onclick="startAllMcqs()" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center gap-2 cursor-pointer">
+                <span>Practice All MCQs (143 Qs)</span>
+              </button>
+              <button onclick="confirmResetProgress()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-rose-950/60 hover:text-rose-300 hover:border-rose-800 text-slate-300 font-semibold text-sm border border-slate-700 transition cursor-pointer">
+                Reset Progress
+              </button>
+            </div>
+          </div>
+
+          <!-- Overall Progress Bar -->
+          <div class="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-bold text-sm">
+                ${g.pct}%
+              </div>
+              <div>
+                <div class="text-sm font-bold text-white">Total Exam Readiness</div>
+                <div class="text-xs text-slate-400">${g.correct} of ${g.total} total questions mastered across all 10 sections</div>
+              </div>
+            </div>
+            <div class="w-full sm:w-64 h-2.5 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-300" style="width: ${g.pct}%"></div>
+            </div>
+          </div>
+
+          <!-- Topic Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. MULTIPLE CHOICE QUIZ VIEW (WITH 1, 2, 3, 4 KEYBOARD MAPPING)
+    function renderQuizView() {
+      const qObj = state.quizQuestions[state.currentIndex];
+      const total = state.quizQuestions.length;
+      const progressPct = Math.round(((state.currentIndex + (state.isAnswered ? 1 : 0)) / total) * 100);
+      const letters = ['A', 'B', 'C', 'D'];
+      const activeTopic = EXAM_TOPICS.find(t => t.id === qObj.topicId);
+
+      const optionsHtml = qObj.options.map((optText, idx) => {
+        const keyNum = idx + 1;
+        const letter = letters[idx];
+        const isCorrectOption = qObj.correct.includes(idx);
+        const isSelected = state.selectedOption === idx;
+
+        let cardClass = 'bg-slate-900 border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 text-slate-100';
+        let badgeClass = 'bg-slate-800 text-indigo-300 border-slate-700';
+        let statusIcon = '';
+
+        if (state.isAnswered) {
+          if (isCorrectOption) {
+            cardClass = 'bg-emerald-950/60 border-emerald-500 text-emerald-100 shadow-lg shadow-emerald-950/40';
+            badgeClass = 'bg-emerald-600 text-white border-emerald-500';
+            statusIcon = `<span class="ml-auto text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1">✓ Correct</span>`;
+          } else if (isSelected && !isCorrectOption) {
+            cardClass = 'bg-rose-950/60 border-rose-500 text-rose-100';
+            badgeClass = 'bg-rose-600 text-white border-rose-500';
+            statusIcon = `<span class="ml-auto text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1">✕ Incorrect</span>`;
+          } else {
+            cardClass = 'bg-slate-900/40 border-slate-800/60 text-slate-500 opacity-60';
+            badgeClass = 'bg-slate-800/60 text-slate-500 border-slate-800';
+          }
+        }
+
+        return `
+          <button
+            onclick="selectMcqOption(${idx})"
+            ${state.isAnswered ? 'disabled' : ''}
+            class="w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all flex items-center gap-4 ${cardClass} ${state.isAnswered ? 'cursor-default' : 'cursor-pointer active:scale-[0.99]'}"
+          >
+            <div class="flex items-center gap-2 shrink-0">
+              <kbd class="keycap font-mono text-xs font-bold px-2.5 py-1.5 rounded-lg border ${badgeClass}">
+                ${keyNum}
+              </kbd>
+              <span class="font-extrabold text-sm sm:text-base text-slate-300">${letter})</span>
+            </div>
+            <span class="text-sm sm:text-base font-medium leading-snug">${escapeHtml(optText)}</span>
+            ${statusIcon}
+          </button>
+        `;
+      }).join('');
+
+      const isUserRight = state.isAnswered && qObj.correct.includes(state.selectedOption);
+
+      return `
+        <div class="max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 flex-1 flex flex-col justify-between fade-in">
+          <div>
+            <!-- Top Meta & Progress -->
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">
+                ${escapeHtml(qObj.topicTitle)}
+              </span>
+              <span class="text-xs font-mono font-semibold text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+                Question ${state.currentIndex + 1} of ${total}
+              </span>
+            </div>
+
+            <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden mb-6 border border-slate-800">
+              <div class="h-full bg-indigo-500 transition-all duration-300" style="width: ${progressPct}%"></div>
+            </div>
+
+            <!-- Grammar Cheat Sheet Toggle (For Grammar Master Revision Pack) -->
+            ${activeTopic && activeTopic.hasCheatSheet ? `
+              <div class="mb-6">
+                <button onclick="toggleCheatSheet()" class="w-full py-2.5 px-4 rounded-xl bg-teal-950/50 hover:bg-teal-900/50 border border-teal-700/50 text-teal-300 text-xs sm:text-sm font-semibold flex items-center justify-between transition cursor-pointer">
+                  <span>📘 ${state.showCheatSheet ? 'Hide' : 'Show'} Grammar Quick Rules & Examples Cheat Sheet</span>
+                  <span>${state.showCheatSheet ? '▲' : '▼'}</span>
+                </button>
+                ${state.showCheatSheet ? renderGrammarCheatSheet() : ''}
+              </div>
+            ` : ''}
+
+            <!-- Question Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl mb-6">
+              <h2 class="text-lg sm:text-2xl font-bold text-white leading-relaxed whitespace-pre-line">${escapeHtml(qObj.q)}</h2>
+            </div>
+
+            <!-- Answer Options (1, 2, 3, 4) -->
+            <div class="space-y-3 mb-6">
+              ${optionsHtml}
+            </div>
+
+            <!-- Instant Explanation Banner -->
+            ${state.isAnswered ? `
+              <div class="rounded-2xl p-5 border ${isUserRight ? 'bg-emerald-950/40 border-emerald-500/40' : 'bg-rose-950/40 border-rose-500/40'} mb-6 fade-in">
+                <div class="flex items-center gap-2 font-bold text-sm mb-1.5 ${isUserRight ? 'text-emerald-400' : 'text-rose-400'}">
+                  <span>${isUserRight ? '✓ Correct Answer!' : '✕ Review Answer Key'}</span>
+                </div>
+                <p class="text-sm text-slate-200 leading-relaxed">
+                  ${escapeHtml(qObj.explanation)}
+                </p>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Bottom Controls -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-800/80">
+            <div class="text-xs text-slate-400 hidden sm:block">
+              Press <kbd class="font-mono bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-slate-200">1</kbd>-<kbd class="font-mono bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-slate-200">4</kbd> to answer
+            </div>
+
+            <button
+              onclick="nextQuestion()"
+              ${!state.isAnswered ? 'disabled' : ''}
+              class="ml-auto px-7 py-3.5 rounded-xl font-bold text-sm flex items-center gap-2 transition ${state.isAnswered ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 cursor-pointer' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}"
+            >
+              <span>${state.currentIndex + 1 === total ? 'Finish & View Score' : 'Next Question'}</span>
+              <kbd class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-black/25 border border-white/15">Enter</kbd>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Grammar Rules Cheat Sheet Component (From REVISION EXAM.pdf Part 1)
+    function renderGrammarCheatSheet() {
+      return `
+        <div class="mt-3 bg-slate-900 border border-teal-800/50 rounded-2xl p-5 text-xs sm:text-sm text-slate-300 space-y-3 fade-in">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+              <strong class="text-teal-300 block mb-1">1. Gerund (-ing used as a NOUN)</strong>
+              <p class="text-slate-400">Example: <em>Swimming</em> improves stamina. (Test: Replace with "the activity").</p>
+            </div>
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+              <strong class="text-teal-300 block mb-1">2. Four Common Gerund Jobs</strong>
+              <p class="text-slate-400">Subject (<em>Reading</em> helps), Direct Object (enjoys <em>reading</em>), Predicate Nominative (hobby is <em>reading</em>), Object of Preposition (good at <em>reading</em>).</p>
+            </div>
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+              <strong class="text-teal-300 block mb-1">3. Participle (Verb form used as ADJECTIVE)</strong>
+              <p class="text-slate-400">Present (-ing) or Past (-ed/-en): The <em>barking</em> dog; The <em>broken</em> glass.</p>
+            </div>
+            <div class="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+              <strong class="text-teal-300 block mb-1">4. Concrete vs. Abstract Nouns</strong>
+              <p class="text-slate-400"><strong>Concrete:</strong> sensed by 5 senses (apple, thunder, music). <strong>Abstract:</strong> ideas/qualities (loyalty, bravery, freedom).</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 4. OPEN-ENDED LITERATURE STUDY VIEW (ALL 13 GRADE 11 QUESTIONS)
+    function renderOpenEndedView() {
+      const qObj = state.quizQuestions[state.currentIndex];
+      const total = state.quizQuestions.length;
+      const isMastered = state.progress[qObj.topicId] && state.progress[qObj.topicId][qObj.qIndex] === true;
+
+      return `
+        <div class="max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 flex-1 flex flex-col justify-between fade-in">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-lg text-xs font-bold uppercase bg-orange-500/15 text-orange-300 border border-orange-500/30">
+                  Open-Ended Literature Study
+                </span>
+                ${isMastered ? '<span class="text-xs font-bold text-emerald-400">✓ Mastered</span>' : ''}
+              </div>
+              <span class="text-xs font-mono font-semibold text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+                Question ${state.currentIndex + 1} of ${total}
+              </span>
+            </div>
+
+            <!-- Prompt Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl mb-6">
+              <h2 class="text-base sm:text-xl font-bold text-white leading-relaxed whitespace-pre-line">${escapeHtml(qObj.q)}</h2>
+            </div>
+
+            <!-- Optional Practice Response Box -->
+            <div class="mb-6">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                Your Practice Response (Optional — draft your thoughts before revealing)
+              </label>
+              <textarea
+                rows="4"
+                oninput="state.userNotes = this.value"
+                placeholder="Type your response here to practice writing for the exam..."
+                class="w-full rounded-2xl bg-slate-900 border border-slate-800 focus:border-indigo-500 focus:outline-none p-4 text-sm text-slate-100 placeholder-slate-500 leading-relaxed"
+              >${escapeHtml(state.userNotes)}</textarea>
+            </div>
+
+            <!-- Reveal / Model Answer Section -->
+            ${!state.openRevealed ? `
+              <button onclick="revealOpenAnswer()" class="w-full py-4 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2 cursor-pointer">
+                <span>Reveal Official Answer Key</span>
+                <kbd class="font-mono text-xs px-2 py-0.5 rounded bg-black/25 border border-white/15">Space</kbd>
+              </button>
+            ` : `
+              <div class="bg-emerald-950/30 border border-emerald-500/40 rounded-3xl p-6 sm:p-7 mb-6 fade-in">
+                <div class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 mb-3">
+                  Official Grade 11 Answer Key
+                </div>
+                <div class="text-sm sm:text-base text-slate-100 leading-relaxed whitespace-pre-line">
+                  ${escapeHtml(qObj.answer)}
+                </div>
+
+                <div class="mt-6 pt-5 border-t border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <span class="text-xs font-semibold text-slate-300">How did you do on this question?</span>
+                  <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button onclick="gradeOpenQuestion(true)" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer">
+                      <kbd class="font-mono text-xs bg-black/25 px-1.5 py-0.5 rounded">1</kbd>
+                      <span>I Got It (Mastered)</span>
+                    </button>
+                    <button onclick="gradeOpenQuestion(false)" class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer">
+                      <kbd class="font-mono text-xs bg-black/25 px-1.5 py-0.5 rounded">2</kbd>
+                      <span>Review Again</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `}
+          </div>
+
+          <!-- Bottom Navigation -->
+          <div class="flex items-center justify-between pt-4 border-t border-slate-800/80 mt-6">
+            <button
+              onclick="prevOpenQuestion()"
+              ${state.currentIndex === 0 ? 'disabled' : ''}
+              class="px-4 py-2.5 rounded-xl font-semibold text-sm border transition ${state.currentIndex === 0 ? 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed' : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200 cursor-pointer'}"
+            >
+              ← Previous
+            </button>
+            <button
+              onclick="nextQuestion()"
+              class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-sm transition cursor-pointer"
+            >
+              ${state.currentIndex + 1 === total ? 'Finish Study →' : 'Skip / Next →'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 5. END-OF-TOPIC SUMMARY VIEW
+    function renderSummaryView() {
+      const total = state.sessionResults.length;
+      const correctCount = state.sessionResults.filter(r => r.isCorrect).length;
+      const accuracy = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+      const missed = state.sessionResults.filter(r => !r.isCorrect);
+
+      return `
+        <div class="max-w-3xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 fade-in">
+          <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 text-2xl font-extrabold mb-4">
+              ${accuracy}%
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Section Complete!</h2>
+            <p class="text-slate-400 text-sm sm:text-base mb-6">
+              You scored <strong class="text-white">${correctCount} out of ${total}</strong> on this session.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <button onclick="navigateTo('dashboard')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/20 transition cursor-pointer">
+                Back to Dashboard
+              </button>
+              ${state.activeTopicId && state.activeTopicId !== 'all_mcqs' ? `
+                <button onclick="startTopic('${state.activeTopicId}')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition cursor-pointer">
+                  Retry Topic
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          ${missed.length > 0 ? `
+            <div class="space-y-4">
+              <h3 class="text-lg font-bold text-rose-400">Questions to Review (${missed.length})</h3>
+              ${missed.map(m => `
+                <div class="bg-slate-900 border border-rose-500/30 rounded-2xl p-5">
+                  <div class="text-xs font-semibold text-slate-400 mb-1">${escapeHtml(m.topicTitle)}</div>
+                  <div class="font-bold text-white text-sm sm:text-base mb-3 whitespace-pre-line">${escapeHtml(m.q)}</div>
+                  <div class="text-xs sm:text-sm text-rose-300 mb-1">Your answer: ${escapeHtml(m.userChoice)}</div>
+                  <div class="text-xs sm:text-sm text-emerald-400 font-semibold mb-2">Correct answer: ${escapeHtml(m.correctChoices.join(' OR '))}</div>
+                  <div class="text-xs text-slate-300 bg-slate-950/70 p-3 rounded-xl border border-slate-800">${escapeHtml(m.explanation)}</div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-2xl p-6 text-center text-emerald-300 font-semibold text-sm">
+              Perfect score! You answered every single question in this section accurately.
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Initialize App on Window Load
+    window.onload = function () {
+      render();
+    };
+  </script>
+</body>
+</html>
